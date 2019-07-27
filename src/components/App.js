@@ -1,94 +1,101 @@
 import React from "react";
-import Form1 from './Form1';
-import Form2 from './Form2';
-import Form3 from './Form3';
-import Form4 from './Form4';
+import FormAll from './FormAll';
 
 export default class App extends React.Component {
-  constructor(){
-    super()
-    
-    this.state = this.initialState
+  constructor() {
+    super();
+
+    this.state = this.initialState;
   }
   initialState = {
-    step: 1,
-    firstName: '',
-    lastName: '',
-    password:'',
-    passwordRepeat:'',
-    gender: 'male',
-    email:'',
-    mobile:'',
-    country:'Ukraine',
-    city:'Select city',
-    userpic:'',
-    errors:{
+      step: 1,
+      userInfo: { 
+                  firstName: "",
+                  lastName: "",
+                  password: "",
+                  passwordRepeat: "",
+                  gender: "male",
+                  email: "",
+                  mobile: "",
+                  countryID: "1",
+                  cityID: "0",
+                  userpic: ""
+                },
+      errors: {}
+  };
+
+  onChange = event => {
+    let obj = {[event.target.name]: event.target.value };
+    this.setState(
+      prevState => (
+       {userInfo: { ...prevState.userInfo, ...obj}}
+      )
+      );
+  };
+
+  onPrev = event => {
+    event.preventDefault();
+    if (this.state.step === 1) {
+      console.log("load previous page");
+    } else {
+      this.setState(prevState => ({
+        step: prevState.step - 1
+      }));
     }
   };
-  onChangeUserpic = (event) => {
-    const reader = new FileReader();
-    reader.onload = event => {
-      this.setState({userpic: event.target.result})
-    }
-    reader.readAsDataURL(event.target.files[0]);
-   
-  }
-  onChange = (event) =>{
-    this.setState({[event.target.name]: event.target.value});
-  }
-  
-  onPrev = (event) => {
-      event.preventDefault();
-      if (this.state.step===1) {
-         console.log('load previous page')}else{
-      let newStep = this.state.step;
-      newStep--;
-      this.setState({step: newStep});}
-  }
-  onReset = event =>{
+  onReset = event => {
     event.preventDefault();
     this.setState(this.initialState);
-  }
-   onNext = (event) => { 
+  };
+
+  getErrors = () => {
+    let errors = {};
+    let userInfo = this.state.userInfo,
+     step = this.state.step;
+     switch (step) {
+      case 1:
+        if (userInfo.firstName.length < 3) errors.firstName = "Required";
+        if (userInfo.lastName.length < 3) errors.lastName = "Required";
+        if(userInfo.password < 3) errors.password = "Required";
+        if (userInfo.password !== userInfo.passwordRepeat) errors.passwordRepeat = "Required";
+        break;
+      case 2: 
+      if(userInfo.email.length < 6 || !userInfo.email.match("@")) errors.email = "Required";
+      if(userInfo.cityID === "0") errors.cityID = "Select city";
+      if(userInfo.mobile.length !== 10 || !userInfo.mobile.match(/\d/g)) errors.mobile = "Invalid mobile";
+      break;
+      case 3 :
+         if(!userInfo.userpic) errors.userpic = "Required";
+         break;
+      default : errors = {};
+    }
+
+    return errors;
+  };
+
+  onNext = event => {
     event.preventDefault();
-    let newErrors = {};
-    if (this.state.step===1&&this.state.firstName.length<3){newErrors.firstName = 'Required'};
-    if (this.state.step===1&&this.state.lastName.length<3){newErrors.lastName = 'Required'};
-    if (this.state.step===1&&this.state.password<3){newErrors.password = 'Required'};
-    if (this.state.step===1&&this.state.password !== this.state.passwordRepeat){newErrors.passwordRepeat = 'Required'};
-    if (this.state.step===2&&(this.state.email.length < 6 || !this.state.email.match('@'))){newErrors.email = 'Required'};
-    if (this.state.step===2&&this.state.city==='Select city'){newErrors.city = 'Select city'};
-    if (this.state.step===2&&(this.state.mobile.length !== 10 || !this.state.mobile.match(/\d/g))){newErrors.mobile = 'Invalid mobile'};
-    if (this.state.step===3&&!this.state.userpic){newErrors.userpic = 'Required'};
-    if(Object.keys(newErrors).length){
-      this.setState({errors: newErrors})
-    }else{
-      if (this.state.step ===4){
-        console.log (this.state) 
-      } else{
-        this.setState({errors: newErrors})
-        let newStep = this.state.step;
-        newStep++;
-        this.setState({step: newStep});
+    const errors = this.getErrors();
+    if (Object.keys(errors).length) {
+      this.setState({ errors });
+    } else {
+      if (this.state.step === 4) {
+        console.log(this.state);
+      } else {
+        this.setState(prevState => ({
+          errors,
+          step: prevState.step + 1
+        }));
       }
     }
-  }
-  
+  };
 
   render() {
-    let form;
-    if(this.state.step===1){
-      form = <Form1 onChange={this.onChange} state={this.state} onNext={this.onNext} onPrev={this.onPrev}/>
-    } else if (this.state.step===2){
-      form = <Form2 onChange={this.onChange} state={this.state} onNext={this.onNext} onPrev={this.onPrev}/>
-    } else if (this.state.step===3){
-      form = <Form3 onChange={this.onChangeUserpic} state={this.state} onNext={this.onNext} onPrev={this.onPrev}/>
-    } else if (this.state.step===4){
-      form = <Form4 onChange={this.onChangeUserpic} state={this.state} onReset={this.onReset} onNext={this.onNext} onPrev={this.onPrev}/>}
-    return (
-      <div className="form-container card">
-        {form}
-      </div>
-    );
+      
+    return (<FormAll  {...this.state}
+                      onPrev = {this.onPrev}
+                      onNext = {this.onNext}
+                      onReset= {this.onReset}
+                      onChange={this.onChange} />
+      )}
   }
-}
