@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from 'classnames/bind';
 import Field from "./Field";
-import Selector from "./Selector";
+import Select from "./Select";
 import countries from '../data/countries';
 import cities from '../data/cities';
 
@@ -20,9 +20,10 @@ class FormContacts extends React.Component {
     return classNameFirstName 
   }
   render() {
-   
+   let userInfo = this.props.userInfo,
+   errors = this.props.errors;
     let chosenCountry = countries.filter(element => {
-      return +element.id === +this.props.userInfo.countryID;
+      return +element.id === +userInfo.countryID;
     })[0];
     
     let optionsCities = Object.keys(cities).map(function(key){let city = cities[key];
@@ -52,8 +53,8 @@ class FormContacts extends React.Component {
           placeholder="Enter email"
           name="email"
           onChange={this.props.onChange}
-          value={this.props.userInfo.email}
-          error={this.props.errors.email}
+          value={userInfo.email}
+          error={errors.email}
         />
         <Field
           labelText="Mobile"
@@ -62,26 +63,26 @@ class FormContacts extends React.Component {
           placeholder="Enter mobile"
           name="mobile"
           onChange={this.props.onChange}
-          value={this.props.userInfo.mobile}
-          error={this.props.errors.mobile}
+          value={userInfo.mobile}
+          error={errors.mobile}
         />
-        <Selector
+        <Select
           labelText="Country"
           className="form-control"
           name="countryID"
           onChange={this.props.onChange}
-          value={this.props.userInfo.countryID}
+          value={userInfo.countryID}
           options={optionsCountries}
         />
 
-        <Selector
+        <Select
           labelText="City"
           name="cityID"
-          value = {this.props.userInfo.cityID}
+          value = {userInfo.cityID}
           className={this.setClassName('cityID')}
           onChange={this.props.onChange}
           options={optionsCities}
-          error={this.props.errors.cityID}
+          error={errors.cityID}
         />
        </div>
     );

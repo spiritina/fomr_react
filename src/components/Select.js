@@ -1,6 +1,6 @@
 import React from  'react';
 
-const Selector = props => {
+const Select = props => {
     const {name, onChange, value, error, labelText, options, className} = props;
     return(
         <div className="form-group">
@@ -16,4 +16,4 @@ const Selector = props => {
               </div>
     )
 }
-export default Selector
+export default Select

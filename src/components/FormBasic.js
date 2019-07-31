@@ -9,13 +9,16 @@ let styles = {
 let cx = classNames.bind(styles);
 class FormBasic extends React.Component{
 setClassName = name =>{
-  let classNameFirstName = cx({
+  let className = cx({
     basic: true,
     invalid: this.props.errors[name]
   });
-  return classNameFirstName
+  return className
 }
+
     render(){
+      let userInfo = this.props.userInfo;
+      let errors = this.props.errors;
         return(
             
           <div className='content'>
@@ -25,8 +28,8 @@ setClassName = name =>{
                        placeholder="Enter first name"
                        name='firstName'
                        onChange={this.props.onChange}
-                       value={this.props.userInfo.firstName}
-                       error={this.props.errors.firstName}
+                       value={userInfo.firstName}
+                       error={errors.firstName}
                 />
                 <Field labelText='Last name'
                        type="text"
@@ -34,8 +37,8 @@ setClassName = name =>{
                        placeholder="Enter last name"
                        name='lastName'
                        onChange={this.props.onChange}
-                       value={this.props.userInfo.lastName}
-                       error={this.props.errors.lastName}
+                       value={userInfo.lastName}
+                       error={errors.lastName}
                 />
                 <Field labelText='Passwors'
                        type="password"
@@ -43,8 +46,8 @@ setClassName = name =>{
                        placeholder="Enter password"
                        name='password'
                        onChange={this.props.onChange}
-                       value={this.props.userInfo.password}
-                       error={this.props.errors.password}
+                       value={userInfo.password}
+                       error={errors.password}
                 />
                 <Field labelText='Repeat passwors'
                        type="password"
@@ -52,8 +55,8 @@ setClassName = name =>{
                        placeholder="Repeat password"
                        name='passwordRepeat'
                        onChange={this.props.onChange}
-                       value={this.props.userInfo.passwordRepeat}
-                       error={this.props.errors.passwordRepeat}
+                       value={userInfo.passwordRepeat}
+                       error={errors.passwordRepeat}
                 />
           <fieldset className="form-group">
             <p>Gender</p>
@@ -65,7 +68,7 @@ setClassName = name =>{
                 value="male"
                 id='male'
                 onChange={this.props.onChange}
-                checked={this.props.userInfo.gender==='male'}/>
+                checked={userInfo.gender==='male'}/>
               <label 
               className="form-check-label" 
               htmlFor="male">Male</label>
@@ -78,7 +81,7 @@ setClassName = name =>{
               value="female"
               id='female'
               onChange={this.props.onChange}
-              checked={this.props.userInfo.gender==='female'}
+              checked={userInfo.gender==='female'}
               />
               <label 
               className="form-check-label" 
